@@ -33,6 +33,12 @@ function ready(){
         var input = quantityInputs[i];
         input.addEventListener("change", quantityChanged);
     }
+    // Add to cart
+    var addCart = document.getElementsByClassName("add-cart");
+    for (var i = 0; i < addCart.length; i++){
+        var button = addCart[i];
+        button.addEventListener("click", addCartClicked);
+    }
 }
 
 // Remove items from cart
@@ -40,6 +46,33 @@ function removeCartItem(event){
     var buttonClicked = event.target;
     buttonClicked.parentElement.remove();
     updatetotal();
+}
+// Quantity Changes
+function quantityChanged(event){
+    var input = event.target;
+    if(isNaN(input.value) || input.value <= 0){
+        input.value = 1;
+    }
+    updatetotal();
+}
+// Add to Cart
+function addCartClicked(event){
+    var button = event.target;
+    var shopProducts = button.parentElement;
+    var title = shopProducts.getElementsByClassName("product-title")[0].innertext;
+    var price = shopProducts.getElementsByClassName("price")[0].innertext;
+    var productImg = shopProducts.getElementsByClassName("product-img")[0].src;
+    addProductToCart(title, price, productImg);
+    updatetotal();
+}
+function addProductToCart(title, price, productImg){
+    var cartShopBox = document.createElement("div");
+    // cartShopBox.classList.add("cart-box")
+    var cartItems = document.getElementsByClassName("cart-content")[0];
+    var cartItemsNames = cartItems.document.getElementsByClassName("cart-product-title")[0];
+    for (var i = 0; i < cartItemsNames.length; i++){
+        alert("You have already added this item to cart");
+    }
 }
 
 // Update Total
