@@ -39,6 +39,17 @@ function ready(){
         var button = addCart[i];
         button.addEventListener("click", addCartClicked);
     }
+    // Buy Button Work
+    document.getElementsByClassName("btn-buy")[0].addEventListener("click", buyButtonClicked); 
+}
+//Buy Button
+function buyButtonClicked(){
+    alert("Your order is placed")
+    var cartContent = document.getElementsByClassName("cart-content")[0];
+    while(cartContent.hasChildNodes()){
+        cartContent.removeChild(cartContent.firstChild);
+    }
+    updatetotal();
 }
 
 // Remove items from cart
@@ -56,38 +67,60 @@ function quantityChanged(event){
     updatetotal();
 }
 // Add to Cart
-function addCartClicked(event){
+function addCartClicked(event) {
     var button = event.target;
     var shopProducts = button.parentElement;
-    var title = shopProducts.getElementsByClassName("product-title")[0].innertext;
-    var price = shopProducts.getElementsByClassName("price")[0].innertext;
+    var title = shopProducts.getElementsByClassName("product-title")[0].innerText;
+    var price = shopProducts.getElementsByClassName("price")[0].innerText;
     var productImg = shopProducts.getElementsByClassName("product-img")[0].src;
     addProductToCart(title, price, productImg);
     updatetotal();
 }
-function addProductToCart(title, price, productImg){
+function addProductToCart(title, price, productImg) {
     var cartShopBox = document.createElement("div");
-    // cartShopBox.classList.add("cart-box")
+    cartShopBox.classList.add("cart-box");
     var cartItems = document.getElementsByClassName("cart-content")[0];
-    var cartItemsNames = cartItems.document.getElementsByClassName("cart-product-title")[0];
-    for (var i = 0; i < cartItemsNames.length; i++){
-        alert("You have already added this item to cart");
+    var cartItemsNames = cartItems.getElementsByClassName("cart-product-title");
+    for (var i = 0; i < cartItemsNames.length; i++) {
+        if (cartItemsNames[i].innerText == title) {
+            alert("You have already added this item to cart");
+            return;
+        }
     }
-}
 
+    var cartBoxContent = `<img src="${productImg}" alt="" class="cart-img">
+        <div class="detail-box">
+            <div class="cart-product-title">${title}</div>
+            <div class="cart-price">${price}</div>
+            <input type="number" value="1" class="cart-quantity">
+        </div>
+        <!-- Remove cart -->
+        <i class='bx bxs-trash-alt cart-remove'></i>`;
+    
+    var shopBox = document.createElement("div");
+    shopBox.classList.add("cart-box");
+    shopBox.innerHTML = cartBoxContent;
+    cartItems.append(shopBox);
+
+    shopBox.getElementsByClassName("cart-remove")[0].addEventListener("click", removeCartItem);
+    shopBox.getElementsByClassName("cart-quantity")[0].addEventListener("change", quantityChanged);
+}
 // Update Total
 function updatetotal(){
     var cartContent = document.getElementsByClassName("cart-content")[0];
-    var cartBoxes = document.getElementsByClassName("cart-box")[0];
+    var cartBoxes = document.getElementsByClassName("detail-box");
     var total = 0;
     for( var i = 0; i < cartBoxes.length; i++){
         var cartBox = cartBoxes[i];
         var priceElement = cartBox.getElementsByClassName("cart-price")[0];
-        var quantityElement = cartBox.getElementsByClassName("cart-quantity")[0];
-        var price = parseFloat(priceElement.innertext.replace("Rs", ""));
-        var quantity = quantityElement.value;
-        total = total + price * quantity;
+        console.log("cartBoxes", cartBoxes);
+console.log("priceElement", priceElement);
 
-        document.getElementsByClassName("total-price")[0].innertext = "Rs" + total;
-    }
+        // console.log(priceElement);
+        var quantityElement = cartBox.getElementsByClassName("cart-quantity")[0];
+        var price = parseInt(priceElement.innerText.replace("Rs", ""));
+        var quantity = quantityElement.value;
+        total = total + (price * quantity);
+        }
+        document.getElementsByClassName("total-price")[0].innerText = "Rs " + total + "" + "/-";
 }
